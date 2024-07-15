@@ -44,9 +44,17 @@ def save_to_files(data_list, file_prefix):
 # Main function to handle user selection and generate files
 def main():
     print("Select a type of vulnerability to generate data corpuses:")
-    for key, value in prompts.items():
-        print(f"{key}. {value.split(' ')[2]}")
-
+    print("1. MAC Address")
+    print("2. Passwords")
+    print("3. IP Address")
+    print("4. Email Address")
+    print("5. Bank Account Numbers")
+    print("6. Social Security Numbers")
+    print("7. Financial Information")
+    print("8. Health Care Data")
+    
+    choice = int(input("Enter a number (1-8): "))
+    
     try:
         choice = int(input("Enter a number (1-8): "))
     except ValueError:
