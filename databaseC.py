@@ -36,9 +36,9 @@ def generate_text(prompt, model, tokenizer, num_files=5):
 
 # Function to save text data to .txt files
 def save_to_files(data_list, file_prefix):
-    os.makedirs('data_corpus1', exist_ok=True) # MAKE NEW DIR 
+    os.makedirs('data_corpus1', exist_ok=True) # MAKE NEW DIR --------------------
     for i, data in enumerate(data_list):
-        with open(f'data_corpuses/{file_prefix}_{i+1}.txt', 'w') as f:
+        with open(f'data_corpus1/{file_prefix}_{i+1}.txt', 'w') as f:
             f.write(data)
 
 # Main function to handle user selection and generate files
