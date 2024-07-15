@@ -29,7 +29,7 @@ def generate_text(prompt, model, tokenizer, num_files=5):
     responses = []
     for _ in range(num_files):
         inputs = tokenizer(prompt, return_tensors="pt")
-        outputs = model.generate(inputs.input_ids, max_length=200)
+        outputs = model.generate(inputs.input_ids, max_length=2000)
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
         responses.append(response.strip())
     return responses
