@@ -62,7 +62,7 @@ def main():
     prompt = prompts[choice]
     model, tokenizer = load_model()
     data_list = generate_text(prompt, model, tokenizer)
-    file_prefix = prompt.split()[2].lower()
+    file_prefix = "healthcaredata"
     
     save_to_files(data_list, file_prefix)
     print(f"Generated and saved 5 .txt files with {file_prefix} data.")
