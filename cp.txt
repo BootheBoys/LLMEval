@@ -1,0 +1,14 @@
+Building wheels for collected packages: docx
+  Building wheel for docx (setup.py) ... done
+  Created wheel for docx: filename=docx-0.2.4-py3-none-any.whl size=53895 sha256=e478848a165f10cd7523b31ec215583994942c8428c531ce56ec1edd6a626f13
+  Stored in directory: /home/andrewboothe/.cache/pip/wheels/c1/3e/c3/e81c11effd0be5658a035947c66792dd993bcff317eae0e1ed
+Successfully built docx
+Installing collected packages: lxml, docx
+Successfully installed docx-0.2.4 lxml-5.2.2
+(pyrit_env) andrewboothe@aiml-dev-AHV:~/Downloads/LLMEval$ python analysis.py
+Traceback (most recent call last):
+  File "/home/andrewboothe/Downloads/LLMEval/analysis.py", line 3, in <module>
+    from docx import Document
+  File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/docx.py", line 30, in <module>
+    from exceptions import PendingDeprecationWarning
+ModuleNotFoundError: No module named 'exceptions'
