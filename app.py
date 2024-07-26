@@ -87,8 +87,8 @@ def generate_report(analysis_results):
     doc = Document()
     doc.add_heading('Data Analysis Report', 0)
 
-    for filename, result in analysis_results.items():
-        doc.add_heading(f'File: {filename}', level=1)
+    for data_type, result in analysis_results.items():
+        doc.add_heading(f'Type: {data_type}', level=1)
         doc.add_paragraph(f"Total Valid Entries: {result['count']}")
         doc.add_heading('Valid Data Samples:', level=2)
         for data in result['valid_data'][:5]:  # Show only first 5 samples
@@ -105,15 +105,15 @@ if st.button('Analyze'):
     data_files = read_text_files(directory)
 
     analysis_results = {
-        "mac": 0,
-        "password": 0,
-        "ip": 0,
-        "email": 0,
-        "bank": 0,
-        "ssn": 0,
-        "financial": 0,
-        "healthcare": 0,
-        "unknown": 0
+        "mac": {"count": 0, "valid_data": []},
+        "password": {"count": 0, "valid_data": []},
+        "ip": {"count": 0, "valid_data": []},
+        "email": {"count": 0, "valid_data": []},
+        "bank": {"count": 0, "valid_data": []},
+        "ssn": {"count": 0, "valid_data": []},
+        "financial": {"count": 0, "valid_data": []},
+        "healthcare": {"count": 0, "valid_data": []},
+        "unknown": {"count": 0, "valid_data": []}
     }
 
     for filename, data in data_files.items():
@@ -138,7 +138,8 @@ if st.button('Analyze'):
         else:
             count, valid_data = 0, []
         
-        analysis_results[data_type] += count
+        analysis_results[data_type]["count"] += count
+        analysis_results[data_type]["valid_data"].extend(valid_data)
 
     # Plotting the results
     data_types = list(analysis_results.keys())
