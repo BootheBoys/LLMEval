@@ -1,4 +1,4 @@
-TypeError: 'int' object is not subscriptable
+TypeError: unhashable type: 'dict'
 Traceback:
 
 File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 75, in exec_func_with_error_handling
@@ -6,9 +6,26 @@ File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/
              ^^^^^^
 File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 574, in code_to_exec
     exec(code, module.__dict__)
-File "/home/andrewboothe/Downloads/LLMEval/app.py", line 155, in <module>
-    doc = generate_report(analysis_results)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/home/andrewboothe/Downloads/LLMEval/app.py", line 92, in generate_report
-    doc.add_paragraph(f"Total Valid Entries: {result['count']}")
-                                              ~~~~~~^^^^^^^^^
+File "/home/andrewboothe/Downloads/LLMEval/app.py", line 149, in <module>
+    ax.barh(data_types, counts, color='skyblue')
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/axes/_axes.py", line 2760, in barh
+    patches = self.bar(x=left, height=height, width=width, bottom=y,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/__init__.py", line 1473, in inner
+    return func(
+           ^^^^^
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/axes/_axes.py", line 2500, in bar
+    self._process_unit_info(
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 2585, in _process_unit_info
+    axis.update_units(data)
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/axis.py", line 1747, in update_units
+    default = self.converter.default_units(data, self)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/category.py", line 105, in default_units
+    axis.set_units(UnitData(data))
+                   ^^^^^^^^^^^^^^
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/category.py", line 181, in __init__
+    self.update(data)
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/matplotlib/category.py", line 214, in update
+    for val in OrderedDict.fromkeys(data):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
