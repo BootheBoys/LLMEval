@@ -141,10 +141,11 @@ if st.button('Analyze'):
         analysis_results[data_type]["count"] += count
         analysis_results[data_type]["valid_data"].extend(valid_data)
 
-    # Plotting the results
+    # Extracting counts for plotting
     data_types = list(analysis_results.keys())
-    counts = list(analysis_results.values())
+    counts = [result["count"] for result in analysis_results.values()]
 
+    # Plotting the results
     fig, ax = plt.subplots()
     ax.barh(data_types, counts, color='skyblue')
     ax.set_xlabel('Number of Valid Entries')
