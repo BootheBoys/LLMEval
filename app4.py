@@ -11,7 +11,7 @@ import torch
 os.environ["HUGGINGFACE_TOKEN"] = "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"
 
 # Load the LLM model and tokenizer
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def load_model():
     model_name = "meta-llama/Meta-Llama-3-8B"
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=True, trust_remote_code=True)
@@ -100,8 +100,8 @@ def analyze_with_llm(data):
         prompt += entry + "\n"
     prompt += "\nAnswer:"
 
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(inputs.input_ids, max_length=512)
+    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
+    outputs = model.generate(inputs.input_ids, max_new_tokens=100)
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     if "healthcare" in response.lower():
