@@ -146,17 +146,23 @@ if st.button('Analyze'):
         if count > 0:
             analysis_results[data_type]["file_counts"][filename] = count
 
-    # Extracting counts for plotting
+     # Extracting counts for plotting
     data_types = list(analysis_results.keys())
     counts = [result["total_count"] for result in analysis_results.values()]
 
-    # Plotting the results
+    # Plotting the bar chart
     fig, ax = plt.subplots()
     ax.barh(data_types, counts, color='skyblue')
     ax.set_xlabel('Number of Valid Entries')
     ax.set_title('Data Corpus Analysis Results')
-
     st.pyplot(fig)
+
+    # Plotting the pie chart
+    fig2, ax2 = plt.subplots()
+    ax2.pie(counts, labels=data_types, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired(range(len(counts))))
+    ax2.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    ax2.set_title('Distribution of Data Types')
+    st.pyplot(fig2)
 
     # Generate and display the Word document report
     doc = generate_report(analysis_results)
