@@ -1,8 +1,4 @@
-st.cache is deprecated and will be removed soon. Please use one of Streamlit's new caching commands, st.cache_data or st.cache_resource. More information in our docs.
-
-Note: The behavior of st.cache was updated in Streamlit 1.36 to the new caching logic used by st.cache_data and st.cache_resource. This might lead to some problems or unexpected behavior in certain edge cases.
-
-ValueError: Input length of input_ids is 651, but `max_length` is set to 512. This can lead to unexpected behavior. You should consider increasing `max_length` or, better yet, setting `max_new_tokens`.
+APIRemovedInV1: You tried to access openai.Completion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API. You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28` A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
 Traceback:
 
 File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 75, in exec_func_with_error_handling
@@ -10,12 +6,11 @@ File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/
              ^^^^^^
 File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 574, in code_to_exec
     exec(code, module.__dict__)
-File "/home/andrewboothe/Downloads/LLMEval/app4.py", line 167, in <module>
-    data_type = analyze_with_llm(data)
-                ^^^^^^^^^^^^^^^^^^^^^^
-File "/home/andrewboothe/Downloads/LLMEval/app4.py", line 104, in analyze_with_llm
-    outputs = model.generate(inputs.input_ids, max_length=512)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
+File "/home/andrewboothe/Downloads/LLMEval/app4v4.py", line 160, in <module>
+    response = analyze_with_openai(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/andrewboothe/Downloads/LLMEval/app4v4.py", line 96, in analyze_with_openai
+    response = openai.Completion.create(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/andrewboothe/miniconda3/envs/pyrit_env/lib/python3.11/site-packages/openai/lib/_old_api.py", line 39, in __call__
+    raise APIRemovedInV1(symbol=self._symbol)
