@@ -4,21 +4,10 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from docx import Document
 from io import BytesIO
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+import openai
 
-# Set Hugging Face token
-os.environ["HUGGINGFACE_TOKEN"] = "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"
-
-# Load the LLM model and tokenizer
-@st.cache_resource
-def load_model():
-    model_name = "meta-llama/Meta-Llama-3-8B"
-    tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=True, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(model_name, use_auth_token=True, trust_remote_code=True)
-    return model, tokenizer
-
-model, tokenizer = load_model()
+# Set OpenAI API key
+openai.api_key = "sk-proj-bwjd6zaKDgQAl2t8v7ftT3BlbkFJVkHq99unvRPjSwD3UiKT"
 
 # Function to read text files from the directory
 def read_text_files(directory):
@@ -93,26 +82,30 @@ def determine_data_type(data):
     else:
         return "unknown"
 
-# Function to analyze data with LLM
-def analyze_with_llm(data):
+# Function to analyze data with OpenAI API
+def analyze_with_openai(data):
     prompt = (
-        "If the following file has healthcare data in it, reply with 'healthcare' and that word ONLY. "
-        "Do not reply with anything else. If the following file has financial data in it, reply with 'financial' "
-        "and that word ONLY. If it has neither healthcare nor financial data in it, reply with 'unknown'. Do not reply with anything else.\n\n"
+        "Determine if the file has healthcare, financial, or other data in it. "
+        "Respond with a single word from the array: ['healthcare', 'financial', 'other'] based on what you find in the file. "
+        "Only reply with one word.\n\n"
     )
     for entry in data:
         prompt += entry + "\n"
     prompt += "\nAnswer:"
 
-    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
-    attention_mask = inputs['attention_mask']
-    outputs = model.generate(inputs.input_ids, attention_mask=attention_mask, max_new_tokens=100, pad_token_id=tokenizer.eos_token_id)
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=1,
+        n=1,
+        stop=None,
+        temperature=0
+    )
 
-    return response.lower()
+    return response.choices[0].text.strip().lower()
 
 # Function to generate a Word document report
-def generate_report(analysis_results, ai_responses):
+def generate_report(analysis_results):
     doc = Document()
     doc.add_heading('Data Analysis Report', 0)
 
@@ -125,10 +118,6 @@ def generate_report(analysis_results, ai_responses):
         doc.add_paragraph('Files Data was Found In:')
         for filename, count in result['file_counts'].items():
             doc.add_paragraph(f"{filename} [{count} valid entries]")
-
-    doc.add_heading('AI Responses for Unrecognized Files', level=1)
-    for filename, response in ai_responses.items():
-        doc.add_paragraph(f"{filename}: {response}")
 
     return doc
 
@@ -148,10 +137,8 @@ if st.button('Analyze'):
         "ssn": {"total_count": 0, "valid_data": [], "file_counts": {}},
         "financial": {"total_count": 0, "valid_data": [], "file_counts": {}},
         "healthcare": {"total_count": 0, "valid_data": [], "file_counts": {}},
-        "unknown": {"total_count": 0, "valid_data": [], "file_counts": {}}
+        "other": {"total_count": 0, "valid_data": [], "file_counts": {}}
     }
-
-    ai_responses = {}
 
     for filename, data in data_files.items():
         data_type = determine_data_type(data)
@@ -169,9 +156,9 @@ if st.button('Analyze'):
         elif data_type == "ssn":
             count, valid_data = analyze_ssns(data)
         else:
-            # Use LLM to determine if the data is healthcare or financial
-            response = analyze_with_llm(data)
-            ai_responses[filename] = response
+            # Use OpenAI API to determine if the data is healthcare, financial, or other
+            response = analyze_with_openai(data)
+            print(f"{filename}: {response}")  # Print AI response to the terminal
             if response == "financial":
                 data_type = "financial"
                 count, valid_data = analyze_financial_info(data)
@@ -179,7 +166,7 @@ if st.button('Analyze'):
                 data_type = "healthcare"
                 count, valid_data = analyze_health_care_data(data)
             else:
-                data_type = "unknown"
+                data_type = "other"
                 count, valid_data = 0, []
 
         analysis_results[data_type]["total_count"] += count
@@ -206,7 +193,7 @@ if st.button('Analyze'):
     st.pyplot(fig2)
 
     # Generate and display the Word document report
-    doc = generate_report(analysis_results, ai_responses)
+    doc = generate_report(analysis_results)
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
