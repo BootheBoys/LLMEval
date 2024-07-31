@@ -109,15 +109,10 @@ def analyze_with_llm(data):
     outputs = model.generate(inputs.input_ids, attention_mask=attention_mask, max_new_tokens=100, pad_token_id=tokenizer.eos_token_id)
     response = tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
 
-    if response.lower() == "healthcare":
-        return "healthcare"
-    elif response.lower() == "financial":
-        return "financial"
-    else:
-        return "unknown"
+    return response.lower()
 
 # Function to generate a Word document report
-def generate_report(analysis_results):
+def generate_report(analysis_results, ai_responses):
     doc = Document()
     doc.add_heading('Data Analysis Report', 0)
 
@@ -130,6 +125,10 @@ def generate_report(analysis_results):
         doc.add_paragraph('Files Data was Found In:')
         for filename, count in result['file_counts'].items():
             doc.add_paragraph(f"{filename} [{count} valid entries]")
+
+    doc.add_heading('AI Responses for Unrecognized Files', level=1)
+    for filename, response in ai_responses.items():
+        doc.add_paragraph(f"{filename}: {response}")
 
     return doc
 
@@ -152,6 +151,8 @@ if st.button('Analyze'):
         "unknown": {"total_count": 0, "valid_data": [], "file_counts": {}}
     }
 
+    ai_responses = {}
+
     for filename, data in data_files.items():
         data_type = determine_data_type(data)
         
@@ -169,12 +170,16 @@ if st.button('Analyze'):
             count, valid_data = analyze_ssns(data)
         else:
             # Use LLM to determine if the data is healthcare or financial
-            data_type = analyze_with_llm(data)
-            if data_type == "financial":
+            response = analyze_with_llm(data)
+            ai_responses[filename] = response
+            if response == "financial":
+                data_type = "financial"
                 count, valid_data = analyze_financial_info(data)
-            elif data_type == "healthcare":
+            elif response == "healthcare":
+                data_type = "healthcare"
                 count, valid_data = analyze_health_care_data(data)
             else:
+                data_type = "unknown"
                 count, valid_data = 0, []
 
         analysis_results[data_type]["total_count"] += count
@@ -201,7 +206,7 @@ if st.button('Analyze'):
     st.pyplot(fig2)
 
     # Generate and display the Word document report
-    doc = generate_report(analysis_results)
+    doc = generate_report(analysis_results, ai_responses)
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
