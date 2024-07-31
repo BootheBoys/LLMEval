@@ -93,19 +93,16 @@ def analyze_with_openai(data):
         prompt += entry + "\n"
     prompt += "\nAnswer:"
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
+    response = openai.Client().completions.create(
+        model="gpt-4o-mini",
+        prompt=prompt,
         max_tokens=1,
         n=1,
         stop=None,
         temperature=0
     )
 
-    return response.choices[0].message['content'].strip().lower()
+    return response.choices[0].text.strip().lower()
 
 # Function to generate a Word document report
 def generate_report(analysis_results):
