@@ -7,7 +7,7 @@ from io import BytesIO
 import openai
 
 # Set OpenAI API key
-openai.api_key = "sk-proj-bwjd6zaKDgQAl2t8v7ftT3BlbkFJVkHq99unvRPjSwD3UiKT"
+api_key = "sk-proj-bwjd6zaKDgQAl2t8v7ftT3BlbkFJVkHq99unvRPjSwD3UiKT"
 client = openai.Client(api_key=api_key)
 
 # Function to read text files from the directory
